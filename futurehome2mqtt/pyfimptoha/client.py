@@ -3,6 +3,7 @@ import paho.mqtt.client as mqtt
 import requests, threading
 from pyfimptoha.light import Light
 from pyfimptoha.sensor import Sensor
+from pyfimptoha.binary_sensor import Binary_sensor
 from pyfimptoha.switch import Switch
 from pyfimptoha.mode import Mode
 
@@ -11,6 +12,7 @@ class Client:
     lights = []
     sensors = []
     switches = []
+    binary_sensors = []
 
     _devices = [] # discovered fimp devices
     _hassio_token = None
@@ -211,6 +213,14 @@ class Client:
             self.publish_messages(init_state)
             time.sleep(0.1)
             print(init_state)
+        
+        print("- binary_sensors")
+        time.sleep(0.5)
+        for binary_sensor in self.binary_sensors:
+            init_state = binary_sensor.get_init_state()
+            self.publish_messages(init_state)
+            time.sleep(0.1)
+            print(init_state)
 
     def load_json_device(self, filename):
         data = "{}"
@@ -233,8 +243,8 @@ class Client:
             name = device["client"]["name"]
             functionality = device["type"]["type"]
             room = device["room"]
-
-
+            subtype = device["type"]["subtype"]
+            
             # Skip device without room
             if device["room"] == None:
                 # self.log('Skipping: %s %s' % (address, name))
@@ -265,10 +275,12 @@ class Client:
                     service_name.startswith("out_bin_switch")
                 ):
                     component = "switch"
-                elif functionality == "sensor":
-                    component = "sensor"
+
                 elif service_name in Sensor.supported_services():
                     component = "sensor"
+                
+                elif service_name in Binary_sensor.supported_services():
+                    component = "binary_sensor"
 
                 if not component:
                     self.log("- Skipping %s. Not yet supported" % service_name, True)
@@ -278,12 +290,18 @@ class Client:
 
                 # todo Add support for binary_sensor
                 #if component == "sensor" and subtype == "presence":
+                #    component = "binary_sensor"
+
                 #    continue
 
                 if component == "sensor":
                     sensor = Sensor(service_name, service, device)
                     self.sensors.append(sensor)
                     self.components[sensor.unique_id] = sensor
+                elif component == "binary_sensor":
+                    binary_sensor = Binary_sensor(service_name, service, device)
+                    self.binary_sensors.append(binary_sensor)
+                    self.components[binary_sensor.unique_id] = binary_sensor
                 elif component == "switch":
                     switch = Switch(service_name, service, device)
                     self.switches.append(switch)

@@ -51,7 +51,6 @@ class Sensor(Base):
             'sensor_lumin',
             'sensor_power',
             'sensor_temp',
-            'sensor_presence',
             'sensor_temp',
             'sensor_humid',
         ]
@@ -118,6 +117,7 @@ class Sensor(Base):
 
             if 'humidity' in self._device['param']:
                 self._init_value = self._device['param']['humidity']
+        
         elif self._service_name  == "scene_ctrl":
             prefix = "Scene: "
             self._value_template = "{{ value_json.val }}"

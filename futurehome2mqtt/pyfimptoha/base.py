@@ -14,10 +14,7 @@ class Base:
         
         self._address = device["fimp"]["address"]
         self._device = device
-        if device["type"]["subtype"]:
-            self._name = device["client"]["name"] + " - " + device["type"]["subtype"]
-        else:
-            self._name = device["client"]["name"] + " - " + service_name
+        self._name = device["client"]["name"] + " - " + service_name
         self._room = device["room"]
         self._service = service
         self._service_name = service_name

@@ -18,3 +18,4 @@
 .env
 man/
 venv/
+futurehome2mqtt/.env_opr

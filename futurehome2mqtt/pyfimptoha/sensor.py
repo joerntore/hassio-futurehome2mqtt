@@ -47,10 +47,8 @@ class Sensor(Base):
     def supported_services():
         sensors = [
             'battery',
-            'scene_ctrl',
             'sensor_lumin',
             'sensor_power',
-            'sensor_temp',
             'sensor_temp',
             'sensor_humid',
         ]
@@ -118,12 +116,12 @@ class Sensor(Base):
             if 'humidity' in self._device['param']:
                 self._init_value = self._device['param']['humidity']
         
-        elif self._service_name  == "scene_ctrl":
-            prefix = "Scene: "
-            self._value_template = "{{ value_json.val }}"
-            self._expire_after = 1
+        #elif self._service_name  == "scene_ctrl":
+        #    prefix = "Scene: "
+        #    self._value_template = "{{ value_json.val }}"
+        #    self._expire_after = 1
 
-
+        
         self._device_class = device_class
         self._name_prefix = prefix
         self._unit_of_measurement = unit_of_measurement
@@ -132,7 +130,7 @@ class Sensor(Base):
         '''Returns MQTT component to HA'''
 
         payload = {
-            "name": self._name,
+            "name": self._name + " " + self._service_name,
             "state_topic": self._state_topic,
             "unit_of_measurement": self.unit_of_measurement,
             "unique_id": self.unique_id,
@@ -152,7 +150,6 @@ class Sensor(Base):
             "topic": self._config_topic,
             "payload": json.dumps(payload),
         }
-
         return device
 
     def get_init_state(self):

@@ -197,7 +197,7 @@ class Client:
             for data in init_state:
                 self.publish_messages([data])
                 time.sleep(0.1)
-                #print(light + init_state)
+                print(init_state)
 
         print("- switches")
         time.sleep(0.5)
@@ -260,9 +260,12 @@ class Client:
 
 
             for service_name in device["services"]:
+                
                 component = None
                 component_address = address + "-" + service_name
                 service = device["services"][service_name]
+                print("WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWService Name")
+                print(service_name)
 
                 if (
                     functionality == "light" and (

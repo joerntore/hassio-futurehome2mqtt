@@ -14,7 +14,7 @@ class Base:
         
         self._address = device["fimp"]["address"]
         self._device = device
-        self._name = device["client"]["name"] + " - " + service_name
+        self._name = device["client"]["name"]
         self._room = device["room"]
         self._service = service
         self._service_name = service_name
